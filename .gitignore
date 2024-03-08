@@ -1,0 +1,11 @@
+target
+.idea
+# Ignore Gradle project-specific cache directory
+.gradle
+
+*.iml
+*.bat
+*.jar
+
+# Ignore Gradle build output directory
+build
