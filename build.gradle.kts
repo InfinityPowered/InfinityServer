@@ -1,8 +1,9 @@
-import org.gradle.api.publish.maven.internal.publisher.MavenLocalPublisher
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 plugins {
     `java-library`
     `maven-publish`
+    id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
 group = "io.github.derechtepilz"
@@ -22,6 +23,7 @@ repositories {
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
+    implementation("dev.jorel:commandapi-bukkit-shade:9.3.0")
 }
 
 tasks.withType<ProcessResources> {
@@ -38,6 +40,15 @@ tasks.withType<ProcessResources> {
     }
 }
 
+tasks.withType<ShadowJar> {
+    dependencies {
+        include(dependency("dev.jorel:commandapi-bukkit-shade:9.3.0"))
+    }
+    relocate("dev.jorel.commandapi", "io.github.derechtepilz.commandapi")
+    minimize()
+    archiveClassifier = ""
+}
+
 java {
     withJavadocJar()
     withSourcesJar()
@@ -49,6 +60,7 @@ publishing {
             groupId = project.group.toString()
             artifactId = project.name
             version = project.version.toString()
+            artifact(tasks["shadowJar"])
             artifact(tasks["sourcesJar"])
             artifact(tasks["javadocJar"])
             pom {
