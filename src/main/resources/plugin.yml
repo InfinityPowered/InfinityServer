@@ -1,6 +1,6 @@
 name: Infinity
 version: '${version}'
-main: io.github.derechtepilz.infinity.Infinity
+main: io.github.derechtepilz.infinity.InfinityServer
 api-version: '1.20'
 load: STARTUP
 authors:

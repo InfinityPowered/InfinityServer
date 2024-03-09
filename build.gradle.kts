@@ -1,9 +1,13 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import xyz.jpenilla.runpaper.task.RunServer
 
 plugins {
     `java-library`
     `maven-publish`
     id("com.github.johnrengelman.shadow") version "8.1.1"
+
+    // Extra plugins for testing the implementation
+    id("xyz.jpenilla.run-paper") version "2.1.0"
 }
 
 group = "io.github.derechtepilz"
@@ -19,10 +23,12 @@ repositories {
     maven {
         url = uri("https://oss.sonatype.org/content/groups/public/")
     }
+    mavenLocal()
 }
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
+    compileOnly("io.github.derechtepilz:infinity-api:${project.version}")
     implementation("dev.jorel:commandapi-bukkit-shade:9.3.0")
 }
 
@@ -47,6 +53,11 @@ tasks.withType<ShadowJar> {
     relocate("dev.jorel.commandapi", "io.github.derechtepilz.commandapi")
     minimize()
     archiveClassifier = ""
+}
+
+tasks.withType<RunServer> {
+    dependsOn(tasks["shadowJar"])
+    minecraftVersion("1.20.4")
 }
 
 java {
