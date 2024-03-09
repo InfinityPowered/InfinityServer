@@ -3,7 +3,6 @@ import xyz.jpenilla.runpaper.task.RunServer
 
 plugins {
     `java-library`
-    `maven-publish`
     id("com.github.johnrengelman.shadow") version "8.1.1"
 
     // Extra plugins for testing the implementation
@@ -58,26 +57,4 @@ tasks.withType<ShadowJar> {
 tasks.withType<RunServer> {
     dependsOn(tasks["shadowJar"])
     minecraftVersion("1.20.4")
-}
-
-java {
-    withJavadocJar()
-    withSourcesJar()
-}
-
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            groupId = project.group.toString()
-            artifactId = project.name
-            version = project.version.toString()
-            artifact(tasks["shadowJar"])
-            artifact(tasks["sourcesJar"])
-            artifact(tasks["javadocJar"])
-            pom {
-                name.set(project.name)
-                description.set(project.description)
-            }
-        }
-    }
 }
