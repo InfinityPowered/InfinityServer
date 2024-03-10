@@ -3,11 +3,14 @@ package io.github.derechtepilz.infinity;
 import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPIBukkitConfig;
 import dev.jorel.commandapi.CommandAPICommand;
+import io.github.derechtepilz.infinity.annotation.InfinityPlugin;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.slf4j.Logger;
+
+import java.lang.annotation.Annotation;
 
 @SuppressWarnings("UnstableApiUsage")
 public final class InfinityServer extends JavaPlugin implements InfinityAdapter {
@@ -54,5 +57,21 @@ public final class InfinityServer extends JavaPlugin implements InfinityAdapter 
     @Override
     public Logger getInfinityLogger() {
         return logger;
+    }
+
+    @Override
+    public void registerPlugin(Class<?> pluginClass) {
+        Annotation[] annotations = pluginClass.getAnnotations();
+        String pluginName = null;
+        for (Annotation annotation : annotations) {
+            if (!(annotation instanceof InfinityPlugin infinityPlugin)) {
+                continue;
+            }
+            pluginName = infinityPlugin.name();
+        }
+        if (pluginName == null) {
+            throw new IllegalArgumentException("Plugin must be annotated with the InfinityPlugin annotation");
+        }
+
     }
 }
